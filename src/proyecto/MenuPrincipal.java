@@ -15,6 +15,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
      */
     public MenuPrincipal() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -27,6 +28,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         desktopPane = new javax.swing.JDesktopPane();
+        btnSALIR = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         helpMenu = new javax.swing.JMenu();
@@ -39,6 +41,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         desktopPane.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnSALIR.setBackground(new java.awt.Color(255, 51, 51));
+        btnSALIR.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
+        btnSALIR.setForeground(new java.awt.Color(204, 255, 255));
+        btnSALIR.setText("SALIR");
+        btnSALIR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSALIRActionPerformed(evt);
+            }
+        });
+        desktopPane.add(btnSALIR, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 540, -1, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondoMain.jpg"))); // NOI18N
         desktopPane.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1150, 590));
@@ -95,6 +108,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnSALIRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSALIRActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnSALIRActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -131,6 +148,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSALIR;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenu helpMenu1;
