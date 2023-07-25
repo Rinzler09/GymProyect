@@ -4,18 +4,33 @@
  */
 package proyecto;
 
+import ConexionDB.ConexionDB;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author MILTON PAZ
  */
 public class MenuPrincipal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MenuPrincipal
-     */
+    Connection con = null;
+    ConexionDB conecta;
+    String usuario, sentenciaSQL;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+
     public MenuPrincipal() {
         initComponents();
         this.setLocationRelativeTo(null);
+    }
+
+    public void conectarBD() {
+        conecta = new ConexionDB("gimnasio");
+        con = conecta.getConexion();
     }
 
     /**
@@ -27,34 +42,48 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        desktopPane = new javax.swing.JDesktopPane();
+        contenedorMenu = new javax.swing.JDesktopPane();
+        jPanel1 = new javax.swing.JPanel();
         btnSALIR = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         helpMenu = new javax.swing.JMenu();
-        helpMenu1 = new javax.swing.JMenu();
+        menuMembresias = new javax.swing.JMenu();
         helpMenu2 = new javax.swing.JMenu();
         helpMenu3 = new javax.swing.JMenu();
         helpMenu4 = new javax.swing.JMenu();
         helpMenu5 = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        desktopPane.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnSALIR.setBackground(new java.awt.Color(255, 51, 51));
+        btnSALIR.setBackground(new java.awt.Color(255, 255, 255));
         btnSALIR.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
-        btnSALIR.setForeground(new java.awt.Color(204, 255, 255));
+        btnSALIR.setForeground(new java.awt.Color(255, 0, 0));
         btnSALIR.setText("SALIR");
         btnSALIR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSALIRActionPerformed(evt);
             }
         });
-        desktopPane.add(btnSALIR, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 540, -1, -1));
+        jPanel1.add(btnSALIR, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 590, 130, 50));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondoMain.jpg"))); // NOI18N
-        desktopPane.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1150, 590));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 660));
+
+        contenedorMenu.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout contenedorMenuLayout = new javax.swing.GroupLayout(contenedorMenu);
+        contenedorMenu.setLayout(contenedorMenuLayout);
+        contenedorMenuLayout.setHorizontalGroup(
+            contenedorMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        contenedorMenuLayout.setVerticalGroup(
+            contenedorMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
+        );
 
         helpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/clientes.png"))); // NOI18N
         helpMenu.setMnemonic('h');
@@ -62,11 +91,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         helpMenu.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
         menuBar.add(helpMenu);
 
-        helpMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/membresias.png"))); // NOI18N
-        helpMenu1.setMnemonic('h');
-        helpMenu1.setText("MEMBRESIAS");
-        helpMenu1.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
-        menuBar.add(helpMenu1);
+        menuMembresias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/membresias.png"))); // NOI18N
+        menuMembresias.setMnemonic('h');
+        menuMembresias.setText("MEMBRESIAS");
+        menuMembresias.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
+        menuMembresias.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuMembresiasMouseClicked(evt);
+            }
+        });
+        menuBar.add(menuMembresias);
 
         helpMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/horario.png"))); // NOI18N
         helpMenu2.setMnemonic('h');
@@ -98,11 +132,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktopPane)
+            .addComponent(contenedorMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(contenedorMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -111,6 +147,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void btnSALIRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSALIRActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnSALIRActionPerformed
+
+    private void menuMembresiasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMembresiasMouseClicked
+        Membresias jframe = new Membresias();
+        contenedorMenu.add(jframe);
+        jframe.show();
+    }//GEN-LAST:event_menuMembresiasMouseClicked
 
     /**
      * @param args the command line arguments
@@ -149,15 +191,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSALIR;
-    private javax.swing.JDesktopPane desktopPane;
+    private javax.swing.JDesktopPane contenedorMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JMenu helpMenu1;
     private javax.swing.JMenu helpMenu2;
     private javax.swing.JMenu helpMenu3;
     private javax.swing.JMenu helpMenu4;
     private javax.swing.JMenu helpMenu5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu menuMembresias;
     // End of variables declaration//GEN-END:variables
 
 }

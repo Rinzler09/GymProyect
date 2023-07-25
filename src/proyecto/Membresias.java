@@ -1,10 +1,12 @@
 package proyecto;
 
 import ConexionDB.ConexionDB;
+import java.text.ParseException;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
+
 
 /**
  *
@@ -31,30 +33,107 @@ public class Membresias extends javax.swing.JInternalFrame {
         cboMembresias.setSelectedItem("Seleccione una Membresia");
     }
 
-    public void ConectarBD(){
-    conecta = new ConexionBD("gimnasio");
-    con = conecta.getConexion();
-}
+    public void ConectarBD() {
+        conecta = new ConexionDB("gimnasio");
+        con = conecta.getConexion();
+    }
 
-public void takedate(){
-fechaA = this.jdFECHA.getDate();
-SimpleDateFormat fecha= new SimpleDateFormat("yyyy-MM-dd");
-Fecha = fecha.format(fechaA);
-}
+    public void takedate() {
+        fechaA = this.jdFECHA.getDate();
+        SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
+        Fecha = fecha.format(fechaA);
+    }
 
     public void Limpiar() {
         txtID.setText("0");
         cboMembresias.setSelectedItem("SELECCIONE UNA MEMBRESIA");
         txtNombre.setText("");
         txtDescripcion.setText("");
-jdFECHA.setDate(null);
+        jdFECHA.setDate(null);
         LimpiarTable();
     }
 
-private void LimpiarTable() {
+    private void LimpiarTable() {
         int fila = tbMembresias.getRowCount();
         for (int i = fila - 1; i >= 0; i--) {
             modelo.removeRow(i);
+        }
+    }
+
+    public void CrearMembresias() {
+        takedate();
+        try {
+            ConectarBD();
+            sentenciaSQL = "INSERT INTO membresias (id, nombreCliente, descripcion, tipoMembresia, FechaAdquisicion, Estado) VALUES(?,?,?,?,?,?)";
+            ps = con.prepareStatement(sentenciaSQL);
+            ps.setInt(1, 0);
+            ps.setString(2, txtNombre.getText().toString());
+            ps.setString(3, txtDescripcion.getText().toString());
+            ps.setString(4, cboMembresias.getSelectedItem().toString());
+            ps.setString(5, Fecha);
+            ps.setString(6, "Activo");
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "DATOS INGRESADOS CORRECTAMENTE!");
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "ERROR NO SE PUDO INGRESAR DATOS " + ex.getMessage());
+        }
+
+    }
+
+    public void LeerMembresias() {
+        ConectarBD();
+        sentenciaSQL = "SELECT id, nombreCliente, descripcion , tipoMembresia ,FechaAdquisicion FROM membresias WHERE Estado LIKE 'Activo'";
+        try {
+            ps = con.prepareStatement(sentenciaSQL);
+            rs = ps.executeQuery();
+            modelo = (DefaultTableModel) tbMembresias.getModel();
+            while (rs.next()) {
+                datosMembresias[0] = (rs.getInt(1));
+                datosMembresias[1] = (rs.getString(2));
+                datosMembresias[2] = (rs.getString(3));
+                datosMembresias[3] = (rs.getString(4));
+                datosMembresias[4] = (rs.getDate(5));
+                modelo.addRow(datosMembresias);
+            }
+            tbMembresias.setModel(modelo);
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "ERROR NO SE PUDIERON LEER LOS DATOS " + ex.getMessage());
+        }
+    }
+
+    public void ActualizarMembresias() {
+        takedate();
+        try {
+            ConectarBD();
+            sentenciaSQL = "UPDATE membresias SET nombreCliente=?, descripcion=?, tipoMembresia=?, FechaAdquisicion=? WHERE id=?";
+            ps = con.prepareStatement(sentenciaSQL);
+
+            ps.setString(1, txtNombre.getText().toString());
+            ps.setString(2, txtDescripcion.getText().toString());
+            ps.setString(3, cboMembresias.getSelectedItem().toString());
+            ps.setString(4, Fecha);
+            ps.setInt(5, Integer.parseInt(txtID.getText()));
+
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "DATOS ACTUALIZADOS CORRECTAMENTE!");
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "ERROR NO SE PUDIERON ACTUALIZAR LOS DATOS " + ex.getMessage());
+        }
+    }
+
+    public void EliminarMembresias() {
+        try {
+            ConectarBD();
+            sentenciaSQL = "UPDATE membresias SET Estado='Inactivo' WHERE id=" + txtID.getText().trim();
+            ps = con.prepareStatement(sentenciaSQL);
+            ps.execute();
+            JOptionPane.showMessageDialog(null, "DATOS ELIMINADOS CORRECTAMENTE!");
+            con.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "ERROR, NO SE PUDO ELIMINAR LOS DATOS " + ex.getMessage());
         }
     }
 
@@ -86,6 +165,7 @@ private void LimpiarTable() {
         cboMembresias = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
+        btnCASA = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -97,14 +177,22 @@ private void LimpiarTable() {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        tbMembresias.setBackground(new java.awt.Color(204, 255, 204));
+        tbMembresias.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(255, 255, 255), new java.awt.Color(0, 0, 0)));
+        tbMembresias.setForeground(new java.awt.Color(0, 0, 0));
         tbMembresias.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "NOMBRE", "MEMBRESIA", "DESCRIPCION", "FECHA"
+                "ID", "NOMBRE", "DESCRIPCION", "MEMBRESIA", "FECHA"
             }
         ));
+        tbMembresias.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbMembresiasMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbMembresias);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-7, 390, 1070, 180));
@@ -177,7 +265,7 @@ private void LimpiarTable() {
                 txtIDActionPerformed(evt);
             }
         });
-        jPanel1.add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 180, 20));
+        jPanel1.add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 190, 30));
 
         jPanel3.setBackground(new java.awt.Color(0, 204, 204));
         jPanel3.setForeground(new java.awt.Color(0, 0, 0));
@@ -234,7 +322,7 @@ private void LimpiarTable() {
                 txtNombreActionPerformed(evt);
             }
         });
-        jPanel1.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 230, 180, 20));
+        jPanel1.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 250, 30));
 
         jPanel5.setBackground(new java.awt.Color(0, 204, 204));
         jPanel5.setForeground(new java.awt.Color(0, 0, 0));
@@ -261,6 +349,7 @@ private void LimpiarTable() {
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 150, 20));
 
+        cboMembresias.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Principiante", "Profesional", "VIP" }));
         jPanel1.add(cboMembresias, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 300, 160, -1));
 
         jPanel6.setBackground(new java.awt.Color(0, 204, 204));
@@ -269,20 +358,40 @@ private void LimpiarTable() {
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("MEMBRESIAS");
 
+        btnCASA.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
+        btnCASA.setText("HOME");
+        btnCASA.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCASAMouseClicked(evt);
+            }
+        });
+        btnCASA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCASAActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(466, Short.MAX_VALUE)
+                .addContainerGap(519, Short.MAX_VALUE)
                 .addComponent(jLabel5)
-                .addGap(472, 472, 472))
+                .addGap(302, 302, 302)
+                .addComponent(btnCASA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(34, 34, 34))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jLabel5)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jLabel5))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnCASA)))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
@@ -371,25 +480,53 @@ private void LimpiarTable() {
     }//GEN-LAST:event_txtNombreActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        // TODO add your handling code here:
+        this.CrearMembresias();
+        this.Limpiar();
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnLeerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeerActionPerformed
-        // TODO add your handling code here:
+        this.Limpiar();
+        this.LeerMembresias();
     }//GEN-LAST:event_btnLeerActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
+        this.ActualizarMembresias();
+        this.Limpiar();
+        this.LeerMembresias();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        this.EliminarMembresias();
+        this.Limpiar();
+        this.LeerMembresias();
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnCASAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCASAActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCASAActionPerformed
+
+    private void btnCASAMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCASAMouseClicked
+        this.dispose();
+    }//GEN-LAST:event_btnCASAMouseClicked
+
+    private void tbMembresiasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbMembresiasMouseClicked
+        int fila = tbMembresias.getSelectedRow();
+        txtID.setText(tbMembresias.getValueAt(fila, 0).toString());
+        txtNombre.setText(tbMembresias.getValueAt(fila, 1).toString());
+        txtDescripcion.setText(tbMembresias.getValueAt(fila, 2).toString());
+        cboMembresias.setSelectedItem(tbMembresias.getValueAt(fila, 3).toString());
+        Date FechaTabla = (Date) tbMembresias.getValueAt(fila, 4);
+        java.util.Date FechaActualizar = new java.util.Date(FechaTabla.getTime());
+        jdFECHA.setDate(FechaActualizar);
+
+
+    }//GEN-LAST:event_tbMembresiasMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel FONDO;
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnCASA;
     private javax.swing.JButton btnCrear;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLeer;
