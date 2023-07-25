@@ -1,8 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
 package proyecto;
+
+import ConexionDB.ConexionDB;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -10,11 +12,50 @@ package proyecto;
  */
 public class Membresias extends javax.swing.JInternalFrame {
 
+    java.util.Date fechaA;
+    String Fecha = "";
+    String usuario, sentenciaSQL;
+    Connection con = null;
+    ConexionDB conecta;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    DefaultTableModel modelo;
+    Object datosMembresias[] = new Object[5];
+
     /**
      * Creates new form Membresias
      */
     public Membresias() {
         initComponents();
+        txtID.setText("0");
+        cboMembresias.setSelectedItem("Seleccione una Membresia");
+    }
+
+    public void ConectarBD(){
+    conecta = new ConexionBD("gimnasio");
+    con = conecta.getConexion();
+}
+
+public void takedate(){
+fechaA = this.jdFECHA.getDate();
+SimpleDateFormat fecha= new SimpleDateFormat("yyyy-MM-dd");
+Fecha = fecha.format(fechaA);
+}
+
+    public void Limpiar() {
+        txtID.setText("0");
+        cboMembresias.setSelectedItem("SELECCIONE UNA MEMBRESIA");
+        txtNombre.setText("");
+        txtDescripcion.setText("");
+jdFECHA.setDate(null);
+        LimpiarTable();
+    }
+
+private void LimpiarTable() {
+        int fila = tbMembresias.getRowCount();
+        for (int i = fila - 1; i >= 0; i--) {
+            modelo.removeRow(i);
+        }
     }
 
     /**
@@ -27,6 +68,8 @@ public class Membresias extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbMembresias = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         btnCrear = new javax.swing.JButton();
         btnLeer = new javax.swing.JButton();
@@ -43,11 +86,28 @@ public class Membresias extends javax.swing.JInternalFrame {
         cboMembresias = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtDescripcion = new javax.swing.JTextArea();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jdFECHA = new com.toedter.calendar.JDateChooser();
         FONDO = new javax.swing.JLabel();
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tbMembresias.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "NOMBRE", "MEMBRESIA", "DESCRIPCION", "FECHA"
+            }
+        ));
+        jScrollPane1.setViewportView(tbMembresias);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-7, 390, 1070, 180));
 
         jPanel2.setBackground(new java.awt.Color(0, 204, 204));
 
@@ -99,15 +159,15 @@ public class Membresias extends javax.swing.JInternalFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(63, 63, 63)
+                .addGap(29, 29, 29)
                 .addComponent(btnCrear)
-                .addGap(85, 85, 85)
+                .addGap(42, 42, 42)
                 .addComponent(btnLeer)
-                .addGap(87, 87, 87)
+                .addGap(37, 37, 37)
                 .addComponent(btnActualizar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                .addGap(40, 40, 40)
                 .addComponent(btnEliminar)
-                .addGap(62, 62, 62))
+                .addContainerGap(228, Short.MAX_VALUE))
         );
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 70, 160, 500));
@@ -117,14 +177,14 @@ public class Membresias extends javax.swing.JInternalFrame {
                 txtIDActionPerformed(evt);
             }
         });
-        jPanel1.add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 150, 180, 20));
+        jPanel1.add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 180, 20));
 
         jPanel3.setBackground(new java.awt.Color(0, 204, 204));
         jPanel3.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Nombre de Cliente:");
+        jLabel1.setText("Fecha de Adquisicion:");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -132,8 +192,8 @@ public class Membresias extends javax.swing.JInternalFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,14 +202,14 @@ public class Membresias extends javax.swing.JInternalFrame {
                 .addGap(0, 1, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 240, 150, 20));
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 280, 210, 20));
 
         jPanel4.setBackground(new java.awt.Color(0, 204, 204));
         jPanel4.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Codigo de Cliente:");
+        jLabel2.setText("ID del Cliente:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -167,14 +227,14 @@ public class Membresias extends javax.swing.JInternalFrame {
                 .addGap(0, 1, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, 150, 20));
+        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 140, 120, 20));
 
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNombreActionPerformed(evt);
             }
         });
-        jPanel1.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 240, 180, 20));
+        jPanel1.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 230, 180, 20));
 
         jPanel5.setBackground(new java.awt.Color(0, 204, 204));
         jPanel5.setForeground(new java.awt.Color(0, 0, 0));
@@ -199,9 +259,9 @@ public class Membresias extends javax.swing.JInternalFrame {
                 .addGap(0, 1, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 300, 150, 20));
+        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 150, 20));
 
-        jPanel1.add(cboMembresias, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 300, 160, -1));
+        jPanel1.add(cboMembresias, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 300, 160, -1));
 
         jPanel6.setBackground(new java.awt.Color(0, 204, 204));
 
@@ -228,17 +288,62 @@ public class Membresias extends javax.swing.JInternalFrame {
 
         jPanel1.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1060, 70));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        jPanel7.setBackground(new java.awt.Color(0, 204, 204));
+        jPanel7.setForeground(new java.awt.Color(0, 0, 0));
 
-            },
-            new String [] {
-                "COD", "NOMBRE", "MEMBRESIA"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Nombre de Cliente:");
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-7, 390, 910, 180));
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(jLabel3)
+                .addGap(0, 1, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, 150, 20));
+
+        txtDescripcion.setColumns(20);
+        txtDescripcion.setRows(5);
+        jScrollPane2.setViewportView(txtDescripcion);
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, 250, 110));
+
+        jPanel8.setBackground(new java.awt.Color(0, 204, 204));
+        jPanel8.setForeground(new java.awt.Color(0, 0, 0));
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel6.setText("Descripcion de Membresia:");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(jLabel6)
+                .addGap(0, 1, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 140, 210, 20));
+        jPanel1.add(jdFECHA, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 280, 190, 30));
 
         FONDO.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondoMain.jpg"))); // NOI18N
         jPanel1.add(FONDO, new org.netbeans.lib.awtextra.AbsoluteConstraints(4, -5, 1050, 570));
@@ -291,16 +396,23 @@ public class Membresias extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> cboMembresias;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private com.toedter.calendar.JDateChooser jdFECHA;
+    private javax.swing.JTable tbMembresias;
+    private javax.swing.JTextArea txtDescripcion;
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
