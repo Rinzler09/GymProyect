@@ -47,7 +47,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         btnSALIR = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
-        helpMenu = new javax.swing.JMenu();
+        menuClientes = new javax.swing.JMenu();
         menuMembresias = new javax.swing.JMenu();
         helpMenu2 = new javax.swing.JMenu();
         helpMenu3 = new javax.swing.JMenu();
@@ -85,11 +85,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
         );
 
-        helpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/clientes.png"))); // NOI18N
-        helpMenu.setMnemonic('h');
-        helpMenu.setText("CLIENTES");
-        helpMenu.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
-        menuBar.add(helpMenu);
+        menuClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/clientes.png"))); // NOI18N
+        menuClientes.setMnemonic('h');
+        menuClientes.setText("CLIENTES");
+        menuClientes.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
+        menuClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuClientesMouseClicked(evt);
+            }
+        });
+        menuClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuClientesActionPerformed(evt);
+            }
+        });
+        menuBar.add(menuClientes);
 
         menuMembresias.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/membresias.png"))); // NOI18N
         menuMembresias.setMnemonic('h');
@@ -154,6 +164,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jframe.show();
     }//GEN-LAST:event_menuMembresiasMouseClicked
 
+    private void menuClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClientesActionPerformed
+        
+    }//GEN-LAST:event_menuClientesActionPerformed
+
+    private void menuClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuClientesMouseClicked
+        Clientes jframe = new Clientes();
+        contenedorMenu.add(jframe);
+        jframe.show();
+    }//GEN-LAST:event_menuClientesMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -192,7 +212,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSALIR;
     private javax.swing.JDesktopPane contenedorMenu;
-    private javax.swing.JMenu helpMenu;
     private javax.swing.JMenu helpMenu2;
     private javax.swing.JMenu helpMenu3;
     private javax.swing.JMenu helpMenu4;
@@ -200,6 +219,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu menuClientes;
     private javax.swing.JMenu menuMembresias;
     // End of variables declaration//GEN-END:variables
 
