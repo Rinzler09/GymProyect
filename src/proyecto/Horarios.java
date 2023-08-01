@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
  *
  * @author SAMUEL ULLOA
  */
-public class Clientes extends javax.swing.JInternalFrame {
+public class Horarios extends javax.swing.JInternalFrame {
 
     java.util.Date fechaA;
     String Fecha = "";
@@ -28,7 +28,7 @@ public class Clientes extends javax.swing.JInternalFrame {
      * Creates new form Clientes
      *
      */
-    public Clientes() {
+    public Horarios() {
         initComponents();
         this.ConectarBD();
         //this.Iniciar();
@@ -397,7 +397,7 @@ public class Clientes extends javax.swing.JInternalFrame {
 
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("CLIENTES");
+        jLabel5.setText("HORARIOS");
 
         btnCASA.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         btnCASA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
@@ -420,7 +420,7 @@ public class Clientes extends javax.swing.JInternalFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(553, Short.MAX_VALUE)
+                .addContainerGap(544, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(350, 350, 350)
                 .addComponent(btnCASA, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
