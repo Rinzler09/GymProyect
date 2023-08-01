@@ -21,8 +21,8 @@ public class Clientes extends javax.swing.JInternalFrame {
     PreparedStatement ps = null;
     ResultSet rs = null;
     DefaultTableModel modelo;
-    //Object[] datosClientes = new Object[10];
-    DefaultTableModel datosClientes = new DefaultTableModel();
+    Object[] datosClientes = new Object[10];
+    //DefaultTableModel datosClientes = new DefaultTableModel();
 
     /**
      * Creates new form Clientes
@@ -94,19 +94,18 @@ public class Clientes extends javax.swing.JInternalFrame {
         }
 
     }
-    
-    /*
+
     public void LeerClientes() {
         ConectarBD();
         sentenciaSQL = "SELECT id, Nombres, Apellidos, Identidad, FechaNacimiento, Peso, Altura, Telefono, Correo, RTN"
-                + "FROM clientes WHERE Estado LIKE 'Activo'";
+                + " FROM clientes WHERE Estado LIKE 'Activo'";
         try {
             ps = con.prepareStatement(sentenciaSQL);
             rs = ps.executeQuery();
             modelo = (DefaultTableModel) tbClientes.getModel();
             while (rs.next()) {
-                datosClientes[0] = (rs.getString(1));
-                //datosClientes[0] = (rs.getInt(1));
+                //datosClientes[0] = (rs.getString(1));
+                datosClientes[0] = (rs.getInt(1));
                 datosClientes[1] = (rs.getString(2));
                 datosClientes[2] = (rs.getString(3));
                 datosClientes[3] = (rs.getString(4));
@@ -123,58 +122,8 @@ public class Clientes extends javax.swing.JInternalFrame {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "ERROR NO SE PUDIERON LEER LOS DATOS " + ex.getMessage());
         }
-    }*/
-    
-    public void Iniciar(){
-        datosClientes.addColumn("ID");
-        datosClientes.addColumn("NOMBRE");
-        datosClientes.addColumn("APELLIDO");
-        datosClientes.addColumn("IDENTIDAD");
-        datosClientes.addColumn("FECHA NAC");
-        datosClientes.addColumn("PESO");
-        datosClientes.addColumn("ALTURA");
-        datosClientes.addColumn("TELEFONO");
-        datosClientes.addColumn("CORREO");
-        datosClientes.addColumn("RTN");
-        this.tbClientes.setModel(datosClientes);
-        this.VerConsulta();
     }
-    
-    public void VerConsulta(){
-        
-        ConectarBD();
-        sentenciaSQL = "SELECT id, Nombres, Apellidos, Identidad, FechaNacimiento, Peso, Altura, Telefono, Correo, RTN"
-                + "FROM clientes WHERE Estado LIKE 'Activo'";
-        
-        //String sql="SELECT * FROM cliente";
 
-        String [] insertar=new String[10];
-        
-        try {
-            ps = con.prepareStatement(sentenciaSQL);
-            rs = ps.executeQuery();
-            modelo = (DefaultTableModel) tbClientes.getModel();
-
-            while(rs.next()){
-                insertar[0]=rs.getString(1);
-                insertar[1]=rs.getString(2);
-                insertar[2]=rs.getString(3);
-                insertar[3]=rs.getString(4);
-                insertar[4]=rs.getString(5);
-                insertar[5]=rs.getString(6);
-                insertar[6]=rs.getString(7);
-                insertar[7]=rs.getString(8);
-                insertar[8]=rs.getString(9);
-                insertar[9]=rs.getString(10);
-
-                datosClientes.addRow(insertar);
-            }
-            tbClientes.setModel(datosClientes);
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
     
 
     public void ActualizarClientes() {
@@ -184,7 +133,7 @@ public class Clientes extends javax.swing.JInternalFrame {
             sentenciaSQL = "UPDATE clientes SET Nombres=?, Apellidos=?, Identidad=?, FechaNacimiento=?, Peso=?, Altura=?"
                     + "Telefono=?, Correo=?, RTN=? WHERE id=?";
             ps = con.prepareStatement(sentenciaSQL);
-            
+
             ps.setString(1, txtNombres.getText().toString());
             ps.setString(2, txtApellidos.getText().toString());
             ps.setString(3, txtIdentidad.getText().toString());
@@ -280,7 +229,7 @@ public class Clientes extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-
+                "id", "Nombre", "Apellido", "Identidad", "FechaNac", "Peso", "Altura", "Telefono", "Correo", "RTN"
             }
         ));
         tbClientes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -337,7 +286,7 @@ public class Clientes extends javax.swing.JInternalFrame {
                     .addComponent(btnActualizar)
                     .addComponent(btnLeer, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCrear, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -369,7 +318,7 @@ public class Clientes extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -636,7 +585,7 @@ public class Clientes extends javax.swing.JInternalFrame {
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -745,7 +694,7 @@ public class Clientes extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -765,7 +714,8 @@ public class Clientes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnLeerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeerActionPerformed
-        this.Iniciar();
+        this.LeerClientes();
+//this.Iniciar();
         //this.LeerClientes();
         //this.Limpiar();
     }//GEN-LAST:event_btnLeerActionPerformed
