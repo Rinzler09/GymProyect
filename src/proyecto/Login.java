@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Login extends javax.swing.JFrame {
 
-    String usuario, sentenciaSQL;
+    String usuario, perfil, sentenciaSQL;
     Connection con = null;
     ConexionDB conecta;
     PreparedStatement ps = null;
@@ -30,13 +30,118 @@ public class Login extends javax.swing.JFrame {
         txtUSER.requestFocus();
     }
 
+    /* public void conectarBD() {
+        conecta = new ConexionDB("gimnasio");
+        con = conecta.getConexion();
+    }
+
+    public void ValidarUsuario() {
+
+        try {
+            String user = txtUSER.getText();
+            String pass = txtPassword.getText();
+
+            String sql = "SELECT * FROM public.\"usuarios\" "
+                    + "WHERE \"user\"='" + user + "' AND \"password\"='" + pass + "'";
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            if (rs.next()) {// IF DEL rs
+                user = rs.getString("user");
+                pass = rs.getString("password");
+                perfil = rs.getString("rol");
+
+                System.out.println(perfil);
+                MenuPrincipal mdi = new MenuPrincipal();
+
+                // Perfil 1 Super Usuario
+                if (perfil.contains("Administrador")) {
+                    mdi.menuHorarios.setVisible(true);
+                    mdi.menuClientes.setVisible(true);
+                    mdi.menuMembresias.setVisible(true);
+                    mdi.menuMensajeria.setVisible(true);
+                    mdi.menuControl.setVisible(true);
+                    mdi.menuFacturacion.setVisible(true);
+
+                } // Perfil 2 Horarios
+                else if (perfil.contains("Horarios")) {
+                    mdi.menuHorarios.setVisible(true);
+                    mdi.menuClientes.setVisible(false);
+                    mdi.menuMembresias.setVisible(false);
+                    mdi.menuMensajeria.setVisible(false);
+                    mdi.menuControl.setVisible(false);
+                    mdi.menuFacturacion.setVisible(false);
+
+                } // Perfil 3 Clientes
+                else if (perfil.contains("Clientes")) {
+                    mdi.menuHorarios.setVisible(false);
+                    mdi.menuClientes.setVisible(true);
+                    mdi.menuMembresias.setVisible(false);
+                    mdi.menuMensajeria.setVisible(false);
+                    mdi.menuControl.setVisible(false);
+                    mdi.menuFacturacion.setVisible(false);
+
+                } // Perfil 4 Membresias
+                else if (perfil.contains("Membresias")) {
+                    mdi.menuHorarios.setVisible(false);
+                    mdi.menuClientes.setVisible(false);
+                    mdi.menuMembresias.setVisible(true);
+                    mdi.menuMensajeria.setVisible(false);
+                    mdi.menuControl.setVisible(false);
+                    mdi.menuFacturacion.setVisible(false);
+
+                } // Perfil 5 Mensajeria
+                else if (perfil.contains("Mensajeria")) {
+                    mdi.menuHorarios.setVisible(false);
+                    mdi.menuClientes.setVisible(false);
+                    mdi.menuMembresias.setVisible(false);
+                    mdi.menuMensajeria.setVisible(true);
+                    mdi.menuControl.setVisible(false);
+                    mdi.menuFacturacion.setVisible(false);
+
+                } // Perfil 6 Control
+                else if (perfil.contains("Control")) {
+                    mdi.menuHorarios.setVisible(false);
+                    mdi.menuClientes.setVisible(false);
+                    mdi.menuMembresias.setVisible(false);
+                    mdi.menuMensajeria.setVisible(false);
+                    mdi.menuControl.setVisible(true);
+                    mdi.menuFacturacion.setVisible(false);
+
+                } // Perfil 7 Facturacion
+                else if (perfil.contains("Facturacion")) {
+                    mdi.menuHorarios.setVisible(false);
+                    mdi.menuClientes.setVisible(false);
+                    mdi.menuMembresias.setVisible(false);
+                    mdi.menuMensajeria.setVisible(false);
+                    mdi.menuControl.setVisible(false);
+                    mdi.menuFacturacion.setVisible(true);
+                }
+
+                mdi.setVisible(true);//Muestra el mdi, 
+                this.dispose(); //cierra el formulario de inicio de sesion
+
+            }//FIN DE IF del rs
+            else {
+                JOptionPane.showMessageDialog(null, "DATOS INCORRECTOS", "ERROR", JOptionPane.ERROR_MESSAGE);
+                this.txtUSER.setText("");
+                this.txtPassword.setText("");
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+     */
     public void conectarBD() {
         conecta = new ConexionDB("gimnasio");
         con = conecta.getConexion();
     }
 
-    public void Acceso() {
-        try {
+    public void ValidarUsuario() {
+         try {
             conectarBD();
             String usuario = txtUSER.getText();
             String password = txtPassword.getText();
@@ -45,19 +150,20 @@ public class Login extends javax.swing.JFrame {
             ps.setString(1, usuario);
             ps.setString(2, password);
             rs = ps.executeQuery();
-
-            if (rs.next()) {
+            
+             if (rs.next()) {
                 MenuPrincipal menu = new MenuPrincipal();
+                menu.usuario = txtUSER.getText();
                 menu.setVisible(true);
                 this.hide();
             } else {
-                JOptionPane.showMessageDialog(null, "Nombre de Usuario o Contraseña incorrectos");
+                JOptionPane.showMessageDialog(null, "Nombre de usuario o contraseña incorrectos");
             }
-        } catch (SQLException e) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, e);
-        }
 
-    }
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -123,7 +229,8 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
-        this.Acceso();
+        this.ValidarUsuario();
+
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     /**
