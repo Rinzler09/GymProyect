@@ -40,13 +40,7 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
         txtID.setText("0");
         txtUSER.setText("");
         txtPASSWORD.setText("");
-        chkADMIN.setSelected(false);
-        chkCLIENTES.setSelected(false);
-        chkMEMBRESIAS.setSelected(false);
-        chkHORARIOS.setSelected(false);
-        chkACESSCONTROL.setSelected(false);
-        chkMENSAJERIA.setSelected(false);
-        chkFACTURACION.setSelected(false);
+        GrupoRoles.clearSelection();
         LimpiarTable();
         this.rol = "";
     }
@@ -181,6 +175,7 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        GrupoRoles = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbAccesos = new javax.swing.JTable();
@@ -469,30 +464,37 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
 
         jPanel3.setBackground(new java.awt.Color(0, 102, 102));
 
+        GrupoRoles.add(chkCLIENTES);
         chkCLIENTES.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         chkCLIENTES.setForeground(new java.awt.Color(255, 255, 255));
         chkCLIENTES.setText("CLIENTES");
 
+        GrupoRoles.add(chkMEMBRESIAS);
         chkMEMBRESIAS.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         chkMEMBRESIAS.setForeground(new java.awt.Color(255, 255, 255));
         chkMEMBRESIAS.setText("MEMBRESIAS");
 
+        GrupoRoles.add(chkHORARIOS);
         chkHORARIOS.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         chkHORARIOS.setForeground(new java.awt.Color(255, 255, 255));
         chkHORARIOS.setText("HORARIOS");
 
+        GrupoRoles.add(chkADMIN);
         chkADMIN.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         chkADMIN.setForeground(new java.awt.Color(255, 255, 255));
         chkADMIN.setText("ADMINISTRADOR");
 
+        GrupoRoles.add(chkMENSAJERIA);
         chkMENSAJERIA.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         chkMENSAJERIA.setForeground(new java.awt.Color(255, 255, 255));
         chkMENSAJERIA.setText("MENSAJERIA");
 
+        GrupoRoles.add(chkFACTURACION);
         chkFACTURACION.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         chkFACTURACION.setForeground(new java.awt.Color(255, 255, 255));
         chkFACTURACION.setText("FACTURACION");
 
+        GrupoRoles.add(chkACESSCONTROL);
         chkACESSCONTROL.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         chkACESSCONTROL.setForeground(new java.awt.Color(255, 255, 255));
         chkACESSCONTROL.setText("CONTROL DE ACCESO");
@@ -613,6 +615,7 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel FONDO;
+    private javax.swing.ButtonGroup GrupoRoles;
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnCASA;
     private javax.swing.JButton btnCrear;
