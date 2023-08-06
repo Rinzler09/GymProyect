@@ -49,10 +49,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         menuClientes = new javax.swing.JMenu();
         menuMembresias = new javax.swing.JMenu();
-        helpMenu2 = new javax.swing.JMenu();
-        helpMenu3 = new javax.swing.JMenu();
-        helpMenu4 = new javax.swing.JMenu();
-        helpMenu5 = new javax.swing.JMenu();
+        menuHorarios = new javax.swing.JMenu();
+        menuMensajeria = new javax.swing.JMenu();
+        menuFacturacion = new javax.swing.JMenu();
+        menuControl = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -112,29 +112,34 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         menuBar.add(menuMembresias);
 
-        helpMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/horario.png"))); // NOI18N
-        helpMenu2.setMnemonic('h');
-        helpMenu2.setText("HORARIOS");
-        helpMenu2.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
-        menuBar.add(helpMenu2);
+        menuHorarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/horario.png"))); // NOI18N
+        menuHorarios.setMnemonic('h');
+        menuHorarios.setText("HORARIOS");
+        menuHorarios.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
+        menuBar.add(menuHorarios);
 
-        helpMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mensaje.png"))); // NOI18N
-        helpMenu3.setMnemonic('h');
-        helpMenu3.setText("MENSAJERIA");
-        helpMenu3.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
-        menuBar.add(helpMenu3);
+        menuMensajeria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mensaje.png"))); // NOI18N
+        menuMensajeria.setMnemonic('h');
+        menuMensajeria.setText("MENSAJERIA");
+        menuMensajeria.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
+        menuBar.add(menuMensajeria);
 
-        helpMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/facturacion.png"))); // NOI18N
-        helpMenu4.setMnemonic('h');
-        helpMenu4.setText("FACTURACION");
-        helpMenu4.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
-        menuBar.add(helpMenu4);
+        menuFacturacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/facturacion.png"))); // NOI18N
+        menuFacturacion.setMnemonic('h');
+        menuFacturacion.setText("FACTURACION");
+        menuFacturacion.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
+        menuBar.add(menuFacturacion);
 
-        helpMenu5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/access.png"))); // NOI18N
-        helpMenu5.setMnemonic('h');
-        helpMenu5.setText("CONTROL DE ACCESO");
-        helpMenu5.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
-        menuBar.add(helpMenu5);
+        menuControl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/access.png"))); // NOI18N
+        menuControl.setMnemonic('h');
+        menuControl.setText("CONTROL DE ACCESO");
+        menuControl.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
+        menuControl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuControlMouseClicked(evt);
+            }
+        });
+        menuBar.add(menuControl);
 
         setJMenuBar(menuBar);
 
@@ -174,6 +179,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jframe.show();
     }//GEN-LAST:event_menuClientesMouseClicked
 
+    private void menuControlMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuControlMouseClicked
+        ControlAcceso jframe = new ControlAcceso();
+        contenedorMenu.add(jframe);
+        jframe.show();
+    }//GEN-LAST:event_menuControlMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -212,15 +223,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSALIR;
     private javax.swing.JDesktopPane contenedorMenu;
-    private javax.swing.JMenu helpMenu2;
-    private javax.swing.JMenu helpMenu3;
-    private javax.swing.JMenu helpMenu4;
-    private javax.swing.JMenu helpMenu5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenu menuClientes;
-    private javax.swing.JMenu menuMembresias;
+    public static javax.swing.JMenu menuClientes;
+    public static javax.swing.JMenu menuControl;
+    public static javax.swing.JMenu menuFacturacion;
+    public static javax.swing.JMenu menuHorarios;
+    public static javax.swing.JMenu menuMembresias;
+    public static javax.swing.JMenu menuMensajeria;
     // End of variables declaration//GEN-END:variables
 
 }

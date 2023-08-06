@@ -17,11 +17,13 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Login extends javax.swing.JFrame {
 
-    String usuario, sentenciaSQL;
+    String usuario, perfil, sentenciaSQL, SentenciaSQL2;
     Connection con = null;
     ConexionDB conecta;
     PreparedStatement ps = null;
+    PreparedStatement ps2 = null;
     ResultSet rs = null;
+    ResultSet rsRoles = null;
     DefaultTableModel modelo;
 
     public Login() {
@@ -35,11 +37,12 @@ public class Login extends javax.swing.JFrame {
         con = conecta.getConexion();
     }
 
-    public void Acceso() {
+    public void ValidarUsuario() {
         try {
             conectarBD();
             String usuario = txtUSER.getText();
             String password = txtPassword.getText();
+            String SentenciaSQL2 = "", Roles;
             sentenciaSQL = "SELECT user, password FROM usuarios WHERE estado LIKE 'Activo' and user=? and password=?";
             ps = con.prepareStatement(sentenciaSQL);
             ps.setString(1, usuario);
@@ -47,16 +50,96 @@ public class Login extends javax.swing.JFrame {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                MenuPrincipal menu = new MenuPrincipal();
-                menu.setVisible(true);
-                this.hide();
-            } else {
-                JOptionPane.showMessageDialog(null, "Nombre de Usuario o Contraseña incorrectos");
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, e);
-        }
+                SentenciaSQL2 = "SELECT rol FROM usuarios WHERE user=?";
+                ps2 = con.prepareStatement(SentenciaSQL2);
+                ps2.setString(1, usuario);
+                ResultSet rsRoles = ps2.executeQuery();
 
+                if (rsRoles.next()) {
+                    MenuPrincipal mdi = new MenuPrincipal();
+                    Roles = rsRoles.getString(1);
+
+                    if (Roles.contains("Administrador")) {
+                        mdi.setVisible(true);
+                        this.hide();
+                        System.out.println("Es perfil de Administrador");
+
+                    } else if (Roles.contains("Horarios")) {
+                        mdi.setVisible(true);
+                        mdi.menuHorarios.setVisible(true);
+                        mdi.menuClientes.setVisible(false);
+                        mdi.menuMembresias.setVisible(false);
+                        mdi.menuMensajeria.setVisible(false);
+                        mdi.menuControl.setVisible(false);
+                        mdi.menuFacturacion.setVisible(false);
+                        this.hide();
+                        System.out.println("Es perfil de Horarios");
+
+                    } else if (Roles.contains("Clientes")) {
+                        mdi.setVisible(true);
+                        mdi.menuHorarios.setVisible(false);
+                        mdi.menuClientes.setVisible(true);
+                        mdi.menuMembresias.setVisible(false);
+                        mdi.menuMensajeria.setVisible(false);
+                        mdi.menuControl.setVisible(false);
+                        mdi.menuFacturacion.setVisible(false);
+                        this.hide();
+                        System.out.println("Es perfil de Clientes");
+
+                    } else if (Roles.contains("Membresias")) {
+                        mdi.setVisible(true);
+                        mdi.menuHorarios.setVisible(false);
+                        mdi.menuClientes.setVisible(false);
+                        mdi.menuMembresias.setVisible(true);
+                        mdi.menuMensajeria.setVisible(false);
+                        mdi.menuControl.setVisible(false);
+                        mdi.menuFacturacion.setVisible(false);
+                        this.hide();
+                        System.out.println("Es perfil de Membresias");
+
+                    } else if (Roles.contains("Mensajeria")) {
+                        mdi.setVisible(true);
+                        mdi.menuHorarios.setVisible(false);
+                        mdi.menuClientes.setVisible(false);
+                        mdi.menuMembresias.setVisible(false);
+                        mdi.menuMensajeria.setVisible(true);
+                        mdi.menuControl.setVisible(false);
+                        mdi.menuFacturacion.setVisible(false);
+                        this.hide();
+                        System.out.println("Es perfil de Mensajeria");
+
+                    } else if (Roles.contains("Control")) {
+                        mdi.setVisible(true);
+                        mdi.menuHorarios.setVisible(false);
+                        mdi.menuClientes.setVisible(false);
+                        mdi.menuMembresias.setVisible(false);
+                        mdi.menuMensajeria.setVisible(false);
+                        mdi.menuControl.setVisible(true);
+                        mdi.menuFacturacion.setVisible(false);
+                        this.hide();
+                        System.out.println("Es perfil de Control");
+
+                    } else if (Roles.contains("Facturacion")) {
+                        mdi.setVisible(true);
+                        mdi.menuHorarios.setVisible(false);
+                        mdi.menuClientes.setVisible(false);
+                        mdi.menuMembresias.setVisible(false);
+                        mdi.menuMensajeria.setVisible(false);
+                        mdi.menuControl.setVisible(false);
+                        mdi.menuFacturacion.setVisible(true);
+                        this.hide();
+                        System.out.println("Es perfil de Facturacion");
+                    }
+
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Nombre de usuario o contraseña incorrectos");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -123,7 +206,8 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
-        this.Acceso();
+        this.ValidarUsuario();
+
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     /**

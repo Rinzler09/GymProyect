@@ -7,22 +7,20 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
 
-
 /**
  *
  * @author MILTON PAZ
  */
 public class ControlAcceso extends javax.swing.JInternalFrame {
 
-    java.util.Date fechaA;
-    String Fecha = "";
+    String rol = " ";
     String usuario, sentenciaSQL;
     Connection con = null;
     ConexionDB conecta;
     PreparedStatement ps = null;
     ResultSet rs = null;
     DefaultTableModel modelo;
-    Object datosMembresias[] = new Object[5];
+    Object datosAcceso[] = new Object[4];
 
     /**
      * Creates new form Membresias
@@ -30,7 +28,7 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
     public ControlAcceso() {
         initComponents();
         txtID.setText("0");
-        cboMembresias.setSelectedItem("Seleccione una Membresia");
+
     }
 
     public void ConectarBD() {
@@ -38,40 +36,73 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
         con = conecta.getConexion();
     }
 
-    public void takedate() {
-        fechaA = this.jdFECHA.getDate();
-        SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
-        Fecha = fecha.format(fechaA);
-    }
-
     public void Limpiar() {
         txtID.setText("0");
-        cboMembresias.setSelectedItem("SELECCIONE UNA MEMBRESIA");
-        txtNombre.setText("");
-        txtDescripcion.setText("");
-        jdFECHA.setDate(null);
+        txtUSER.setText("");
+        txtPASSWORD.setText("");
+        GrupoRoles.clearSelection();
         LimpiarTable();
+        this.rol = "";
     }
 
     private void LimpiarTable() {
-        int fila = tbMembresias.getRowCount();
+        int fila = tbAccesos.getRowCount();
         for (int i = fila - 1; i >= 0; i--) {
             modelo.removeRow(i);
         }
     }
 
-    public void CrearMembresias() {
-        takedate();
+    public void takeROL() {
+        String administrador = " ", mensajeria = " ", horarios = " ", facturacion = " ", membresias = " ", clientes = " ", control = " ";
+
+        if (chkADMIN.isSelected()) {
+            administrador = " Administrador ";
+            rol += administrador;
+        }
+
+        if (chkMENSAJERIA.isSelected()) {
+            mensajeria = " Mensajeria ";
+            rol += mensajeria;
+        }
+
+        if (chkHORARIOS.isSelected()) {
+            horarios = " Horarios ";
+            rol += horarios;
+        }
+
+        if (chkFACTURACION.isSelected()) {
+            facturacion = " Facturacion ";
+            rol += facturacion;
+        }
+
+        if (chkMEMBRESIAS.isSelected()) {
+            membresias = " Membresias ";
+            rol += membresias;
+        }
+
+        if (chkCLIENTES.isSelected()) {
+            clientes = " Clientes ";
+            rol += clientes;
+        }
+
+        if (chkACESSCONTROL.isSelected()) {
+            control = " Control ";
+            rol += control;
+        }
+
+    }
+
+    public void CrearRoles() {
+        this.takeROL();
         try {
             ConectarBD();
-            sentenciaSQL = "INSERT INTO membresias (id, nombreCliente, descripcion, tipoMembresia, FechaAdquisicion, Estado) VALUES(?,?,?,?,?,?)";
+            sentenciaSQL = "INSERT INTO usuarios (id, user, password, rol, estado) VALUES(?,?,?,?,?)";
             ps = con.prepareStatement(sentenciaSQL);
             ps.setInt(1, 0);
-            ps.setString(2, txtNombre.getText().toString());
-            ps.setString(3, txtDescripcion.getText().toString());
-            ps.setString(4, cboMembresias.getSelectedItem().toString());
-            ps.setString(5, Fecha);
-            ps.setString(6, "Activo");
+            ps.setString(2, txtUSER.getText().toString());
+            ps.setString(3, txtPASSWORD.getText().toString());
+            ps.setString(4, rol);
+            ps.setString(5, "Activo");
             ps.execute();
             JOptionPane.showMessageDialog(null, "DATOS INGRESADOS CORRECTAMENTE!");
             con.close();
@@ -81,40 +112,38 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
 
     }
 
-    public void LeerMembresias() {
+    public void LeerRoles() {
         ConectarBD();
-        sentenciaSQL = "SELECT id, nombreCliente, descripcion , tipoMembresia ,FechaAdquisicion FROM membresias WHERE Estado LIKE 'Activo'";
+        sentenciaSQL = "SELECT id, user, password, rol FROM usuarios WHERE Estado LIKE 'Activo'";
         try {
             ps = con.prepareStatement(sentenciaSQL);
             rs = ps.executeQuery();
-            modelo = (DefaultTableModel) tbMembresias.getModel();
+            modelo = (DefaultTableModel) tbAccesos.getModel();
             while (rs.next()) {
-                datosMembresias[0] = (rs.getInt(1));
-                datosMembresias[1] = (rs.getString(2));
-                datosMembresias[2] = (rs.getString(3));
-                datosMembresias[3] = (rs.getString(4));
-                datosMembresias[4] = (rs.getDate(5));
-                modelo.addRow(datosMembresias);
+                datosAcceso[0] = (rs.getInt(1));
+                datosAcceso[1] = (rs.getString(2));
+                datosAcceso[2] = (rs.getString(3));
+                datosAcceso[3] = (rs.getString(4));
+                modelo.addRow(datosAcceso);
             }
-            tbMembresias.setModel(modelo);
+            tbAccesos.setModel(modelo);
             con.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "ERROR NO SE PUDIERON LEER LOS DATOS " + ex.getMessage());
         }
     }
 
-    public void ActualizarMembresias() {
-        takedate();
+    public void ActualizarRoles() {
+        takeROL();
         try {
             ConectarBD();
-            sentenciaSQL = "UPDATE membresias SET nombreCliente=?, descripcion=?, tipoMembresia=?, FechaAdquisicion=? WHERE id=?";
+            sentenciaSQL = "UPDATE usuarios SET user=?, password=?, rol=? WHERE id=?";
             ps = con.prepareStatement(sentenciaSQL);
 
-            ps.setString(1, txtNombre.getText().toString());
-            ps.setString(2, txtDescripcion.getText().toString());
-            ps.setString(3, cboMembresias.getSelectedItem().toString());
-            ps.setString(4, Fecha);
-            ps.setInt(5, Integer.parseInt(txtID.getText()));
+            ps.setString(1, txtUSER.getText().toString());
+            ps.setString(2, txtPASSWORD.getText().toString());
+            ps.setString(3, rol);
+            ps.setInt(4, Integer.parseInt(txtID.getText()));
 
             ps.execute();
             JOptionPane.showMessageDialog(null, "DATOS ACTUALIZADOS CORRECTAMENTE!");
@@ -124,10 +153,10 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
         }
     }
 
-    public void EliminarMembresias() {
+    public void EliminarRoles() {
         try {
             ConectarBD();
-            sentenciaSQL = "UPDATE membresias SET Estado='Inactivo' WHERE id=" + txtID.getText().trim();
+            sentenciaSQL = "UPDATE usuarios SET Estado='Inactivo' WHERE id=" + txtID.getText().trim();
             ps = con.prepareStatement(sentenciaSQL);
             ps.execute();
             JOptionPane.showMessageDialog(null, "DATOS ELIMINADOS CORRECTAMENTE!");
@@ -146,54 +175,58 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        GrupoRoles = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbMembresias = new javax.swing.JTable();
+        tbAccesos = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         btnCrear = new javax.swing.JButton();
         btnLeer = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         txtID = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
+        txtUSER = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        cboMembresias = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         btnCASA = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtDescripcion = new javax.swing.JTextArea();
         jPanel8 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jdFECHA = new com.toedter.calendar.JDateChooser();
+        txtPASSWORD = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        chkCLIENTES = new javax.swing.JCheckBox();
+        chkMEMBRESIAS = new javax.swing.JCheckBox();
+        chkHORARIOS = new javax.swing.JCheckBox();
+        chkADMIN = new javax.swing.JCheckBox();
+        chkMENSAJERIA = new javax.swing.JCheckBox();
+        chkFACTURACION = new javax.swing.JCheckBox();
+        chkACESSCONTROL = new javax.swing.JCheckBox();
         FONDO = new javax.swing.JLabel();
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tbMembresias.setBackground(new java.awt.Color(204, 255, 204));
-        tbMembresias.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(255, 255, 255), new java.awt.Color(0, 0, 0)));
-        tbMembresias.setForeground(new java.awt.Color(0, 0, 0));
-        tbMembresias.setModel(new javax.swing.table.DefaultTableModel(
+        tbAccesos.setBackground(new java.awt.Color(204, 255, 204));
+        tbAccesos.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(255, 255, 255), new java.awt.Color(0, 0, 0)));
+        tbAccesos.setForeground(new java.awt.Color(0, 0, 0));
+        tbAccesos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "NOMBRE", "DESCRIPCION", "MEMBRESIA", "FECHA"
+                "ID", "USUARIO", "PASSWORD", "ROLES"
             }
         ));
-        tbMembresias.addMouseListener(new java.awt.event.MouseAdapter() {
+        tbAccesos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbMembresiasMouseClicked(evt);
+                tbAccesosMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tbMembresias);
+        jScrollPane1.setViewportView(tbAccesos);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-7, 390, 1070, 180));
 
@@ -260,6 +293,7 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 70, 160, 500));
 
+        txtID.setEditable(false);
         txtID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIDActionPerformed(evt);
@@ -267,37 +301,12 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
         });
         jPanel1.add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 190, 30));
 
-        jPanel3.setBackground(new java.awt.Color(0, 204, 204));
-        jPanel3.setForeground(new java.awt.Color(0, 0, 0));
-
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Fecha de Adquisicion:");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addGap(0, 1, Short.MAX_VALUE))
-        );
-
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 280, 210, 20));
-
         jPanel4.setBackground(new java.awt.Color(0, 204, 204));
         jPanel4.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("ID del Cliente:");
+        jLabel2.setText("ID del Usuario:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -317,19 +326,19 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
 
         jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 140, 120, 20));
 
-        txtNombre.addActionListener(new java.awt.event.ActionListener() {
+        txtUSER.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNombreActionPerformed(evt);
+                txtUSERActionPerformed(evt);
             }
         });
-        jPanel1.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 230, 250, 30));
+        jPanel1.add(txtUSER, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 230, 250, 30));
 
         jPanel5.setBackground(new java.awt.Color(0, 204, 204));
         jPanel5.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel4.setText("Tipo de Membresia:");
+        jLabel4.setText("CONTRASEÑA");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -347,16 +356,13 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
                 .addGap(0, 1, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 150, 20));
-
-        cboMembresias.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Principiante", "Profesional", "VIP" }));
-        jPanel1.add(cboMembresias, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 300, 160, -1));
+        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 120, 20));
 
         jPanel6.setBackground(new java.awt.Color(0, 204, 204));
 
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("MEMBRESIAS");
+        jLabel5.setText("CONTROL DE ACCESO");
 
         btnCASA.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         btnCASA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
@@ -379,7 +385,7 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(516, Short.MAX_VALUE)
+                .addContainerGap(437, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(350, 350, 350)
                 .addComponent(btnCASA, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -404,38 +410,32 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
 
         jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Nombre de Cliente:");
+        jLabel3.setText("USUARIO:");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(30, Short.MAX_VALUE)
                 .addComponent(jLabel3)
-                .addContainerGap())
+                .addGap(23, 23, 23))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addComponent(jLabel3)
-                .addGap(0, 1, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addGap(0, 1, Short.MAX_VALUE)
+                .addComponent(jLabel3))
         );
 
-        jPanel1.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, 150, 20));
-
-        txtDescripcion.setColumns(20);
-        txtDescripcion.setRows(5);
-        jScrollPane2.setViewportView(txtDescripcion);
-
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, 250, 110));
+        jPanel1.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, 120, 20));
 
         jPanel8.setBackground(new java.awt.Color(0, 204, 204));
         jPanel8.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel6.setText("Descripcion de Membresia:");
+        jLabel6.setText("ROLES:");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -443,18 +443,106 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jLabel6)
+                .addGap(184, 184, 184))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addComponent(jLabel6)
-                .addGap(0, 1, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addGap(0, 1, Short.MAX_VALUE)
+                .addComponent(jLabel6))
         );
 
-        jPanel1.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 140, 210, 20));
-        jPanel1.add(jdFECHA, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 280, 190, 30));
+        jPanel1.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 150, 70, 20));
+
+        txtPASSWORD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPASSWORDActionPerformed(evt);
+            }
+        });
+        jPanel1.add(txtPASSWORD, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 300, 250, 30));
+
+        jPanel3.setBackground(new java.awt.Color(0, 102, 102));
+
+        GrupoRoles.add(chkCLIENTES);
+        chkCLIENTES.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        chkCLIENTES.setForeground(new java.awt.Color(255, 255, 255));
+        chkCLIENTES.setText("CLIENTES");
+
+        GrupoRoles.add(chkMEMBRESIAS);
+        chkMEMBRESIAS.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        chkMEMBRESIAS.setForeground(new java.awt.Color(255, 255, 255));
+        chkMEMBRESIAS.setText("MEMBRESIAS");
+
+        GrupoRoles.add(chkHORARIOS);
+        chkHORARIOS.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        chkHORARIOS.setForeground(new java.awt.Color(255, 255, 255));
+        chkHORARIOS.setText("HORARIOS");
+
+        GrupoRoles.add(chkADMIN);
+        chkADMIN.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        chkADMIN.setForeground(new java.awt.Color(255, 255, 255));
+        chkADMIN.setText("ADMINISTRADOR");
+
+        GrupoRoles.add(chkMENSAJERIA);
+        chkMENSAJERIA.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        chkMENSAJERIA.setForeground(new java.awt.Color(255, 255, 255));
+        chkMENSAJERIA.setText("MENSAJERIA");
+
+        GrupoRoles.add(chkFACTURACION);
+        chkFACTURACION.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        chkFACTURACION.setForeground(new java.awt.Color(255, 255, 255));
+        chkFACTURACION.setText("FACTURACION");
+
+        GrupoRoles.add(chkACESSCONTROL);
+        chkACESSCONTROL.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        chkACESSCONTROL.setForeground(new java.awt.Color(255, 255, 255));
+        chkACESSCONTROL.setText("CONTROL DE ACCESO");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(97, 97, 97)
+                .addComponent(chkADMIN, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(chkHORARIOS, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                        .addComponent(chkACESSCONTROL, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(chkCLIENTES, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(chkMENSAJERIA, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(chkMEMBRESIAS, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(chkFACTURACION, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(chkADMIN, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkCLIENTES, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkMENSAJERIA, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkFACTURACION, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkMEMBRESIAS, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkHORARIOS, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkACESSCONTROL, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 210, 330, 170));
 
         FONDO.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondoMain.jpg"))); // NOI18N
         jPanel1.add(FONDO, new org.netbeans.lib.awtextra.AbsoluteConstraints(4, -5, 1050, 570));
@@ -477,30 +565,30 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIDActionPerformed
 
-    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
+    private void txtUSERActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUSERActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombreActionPerformed
+    }//GEN-LAST:event_txtUSERActionPerformed
 
     private void btnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearActionPerformed
-        this.CrearMembresias();
+        this.CrearRoles();
         this.Limpiar();
     }//GEN-LAST:event_btnCrearActionPerformed
 
     private void btnLeerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeerActionPerformed
         this.Limpiar();
-        this.LeerMembresias();
+        this.LeerRoles();
     }//GEN-LAST:event_btnLeerActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        this.ActualizarMembresias();
+        this.ActualizarRoles();
         this.Limpiar();
-        this.LeerMembresias();
+        this.LeerRoles();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        this.EliminarMembresias();
+        this.EliminarRoles();
         this.Limpiar();
-        this.LeerMembresias();
+        this.LeerRoles();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCASAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCASAActionPerformed
@@ -511,29 +599,35 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_btnCASAMouseClicked
 
-    private void tbMembresiasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbMembresiasMouseClicked
-        int fila = tbMembresias.getSelectedRow();
-        txtID.setText(tbMembresias.getValueAt(fila, 0).toString());
-        txtNombre.setText(tbMembresias.getValueAt(fila, 1).toString());
-        txtDescripcion.setText(tbMembresias.getValueAt(fila, 2).toString());
-        cboMembresias.setSelectedItem(tbMembresias.getValueAt(fila, 3).toString());
-        Date FechaTabla = (Date) tbMembresias.getValueAt(fila, 4);
-        java.util.Date FechaActualizar = new java.util.Date(FechaTabla.getTime());
-        jdFECHA.setDate(FechaActualizar);
+    private void tbAccesosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbAccesosMouseClicked
+        int fila = tbAccesos.getSelectedRow();
+        txtID.setText(tbAccesos.getValueAt(fila, 0).toString());
+        txtUSER.setText(tbAccesos.getValueAt(fila, 1).toString());
+        txtPASSWORD.setText(tbAccesos.getValueAt(fila, 2).toString());
 
 
-    }//GEN-LAST:event_tbMembresiasMouseClicked
+    }//GEN-LAST:event_tbAccesosMouseClicked
+
+    private void txtPASSWORDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPASSWORDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPASSWORDActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel FONDO;
+    private javax.swing.ButtonGroup GrupoRoles;
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnCASA;
     private javax.swing.JButton btnCrear;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLeer;
-    private javax.swing.JComboBox<String> cboMembresias;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JCheckBox chkACESSCONTROL;
+    private javax.swing.JCheckBox chkADMIN;
+    private javax.swing.JCheckBox chkCLIENTES;
+    private javax.swing.JCheckBox chkFACTURACION;
+    private javax.swing.JCheckBox chkHORARIOS;
+    private javax.swing.JCheckBox chkMEMBRESIAS;
+    private javax.swing.JCheckBox chkMENSAJERIA;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -548,11 +642,9 @@ public class ControlAcceso extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private com.toedter.calendar.JDateChooser jdFECHA;
-    private javax.swing.JTable tbMembresias;
-    private javax.swing.JTextArea txtDescripcion;
+    private javax.swing.JTable tbAccesos;
     private javax.swing.JTextField txtID;
-    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtPASSWORD;
+    private javax.swing.JTextField txtUSER;
     // End of variables declaration//GEN-END:variables
 }
