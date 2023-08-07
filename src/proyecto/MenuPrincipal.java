@@ -116,6 +116,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         menuHorarios.setMnemonic('h');
         menuHorarios.setText("HORARIOS");
         menuHorarios.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
+        menuHorarios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuHorariosMouseClicked(evt);
+            }
+        });
         menuBar.add(menuHorarios);
 
         menuMensajeria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mensaje.png"))); // NOI18N
@@ -190,11 +195,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jframe.show();
     }//GEN-LAST:event_menuControlMouseClicked
 
+
     private void menuFacturacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuFacturacionMouseClicked
         _Facturacion jframe = new _Facturacion();
         contenedorMenu.add(jframe);
         jframe.show();
     }//GEN-LAST:event_menuFacturacionMouseClicked
+
+    private void menuHorariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuHorariosMouseClicked
+
+    }//GEN-LAST:event_menuHorariosMouseClicked
 
     /**
      * @param args the command line arguments
