@@ -5,12 +5,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *
  * @author Carlos Artica
  */
-public class _Facturacion extends javax.swing.JFrame {
+public class _Facturacion extends javax.swing.JInternalFrame {
 
     public _Facturacion() {
         initComponents();
@@ -267,6 +269,7 @@ public class _Facturacion extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         Encabezado = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        btnCASA = new javax.swing.JButton();
         jp_detallesPersonales = new javax.swing.JPanel();
         jrbtn_tarjeta = new javax.swing.JRadioButton();
         jrbtn_tranferencia = new javax.swing.JRadioButton();
@@ -339,6 +342,22 @@ public class _Facturacion extends javax.swing.JFrame {
         jLabel1.setText("FACTURACIÓN");
         jLabel1.setToolTipText("");
 
+        btnCASA.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
+        btnCASA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home.png"))); // NOI18N
+        btnCASA.setBorderPainted(false);
+        btnCASA.setContentAreaFilled(false);
+        btnCASA.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/home60.png"))); // NOI18N
+        btnCASA.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCASAMouseClicked(evt);
+            }
+        });
+        btnCASA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCASAActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout EncabezadoLayout = new javax.swing.GroupLayout(Encabezado);
         Encabezado.setLayout(EncabezadoLayout);
         EncabezadoLayout.setHorizontalGroup(
@@ -346,14 +365,21 @@ public class _Facturacion extends javax.swing.JFrame {
             .addGroup(EncabezadoLayout.createSequentialGroup()
                 .addGap(344, 344, 344)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(363, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 291, Short.MAX_VALUE)
+                .addComponent(btnCASA, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         EncabezadoLayout.setVerticalGroup(
             EncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EncabezadoLayout.createSequentialGroup()
-                .addContainerGap(29, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(27, 27, 27))
+            .addGroup(EncabezadoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(EncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EncabezadoLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(27, 27, 27))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EncabezadoLayout.createSequentialGroup()
+                        .addComponent(btnCASA, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
 
         jPanel1.add(Encabezado, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 930, 80));
@@ -474,7 +500,7 @@ public class _Facturacion extends javax.swing.JFrame {
                                         .addComponent(txt_numeroTarjeta, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE))
                                     .addComponent(cbo_anio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(49, 49, 49)))
-                        .addGap(0, 8, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jp_detallesPersonalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jp_detallesPersonalesLayout.createSequentialGroup()
@@ -809,6 +835,14 @@ public class _Facturacion extends javax.swing.JFrame {
         lb_anio.setVisible(false);
     }//GEN-LAST:event_btn_cancelarActionPerformed
 
+    private void btnCASAMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCASAMouseClicked
+        this.dispose();
+    }//GEN-LAST:event_btnCASAMouseClicked
+
+    private void btnCASAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCASAActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCASAActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -855,6 +889,7 @@ public class _Facturacion extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Encabezado;
     private javax.swing.JLabel Fondo;
+    private javax.swing.JButton btnCASA;
     private javax.swing.JButton btn_cancelar;
     private javax.swing.JButton btn_pagar;
     private javax.swing.JComboBox<String> cbo_anio;

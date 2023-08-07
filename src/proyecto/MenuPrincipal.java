@@ -128,6 +128,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         menuFacturacion.setMnemonic('h');
         menuFacturacion.setText("FACTURACION");
         menuFacturacion.setFont(new java.awt.Font("Perpetua Titling MT", 1, 12)); // NOI18N
+        menuFacturacion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuFacturacionMouseClicked(evt);
+            }
+        });
         menuBar.add(menuFacturacion);
 
         menuControl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/access.png"))); // NOI18N
@@ -184,6 +189,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
         contenedorMenu.add(jframe);
         jframe.show();
     }//GEN-LAST:event_menuControlMouseClicked
+
+    private void menuFacturacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuFacturacionMouseClicked
+        _Facturacion jframe = new _Facturacion();
+        contenedorMenu.add(jframe);
+        jframe.show();
+    }//GEN-LAST:event_menuFacturacionMouseClicked
 
     /**
      * @param args the command line arguments
