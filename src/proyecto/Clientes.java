@@ -114,7 +114,7 @@ public class Clientes extends javax.swing.JInternalFrame {
                 datosClientes[6] = (rs.getString(7));
                 datosClientes[7] = (rs.getString(8));
                 datosClientes[8] = (rs.getString(9));
-                //datosClientes[9] = (rs.getString(10));
+                datosClientes[9] = (rs.getString(10));
                 modelo.addRow(datosClientes);
             }
             tbClientes.setModel(modelo);
@@ -742,9 +742,9 @@ public class Clientes extends javax.swing.JInternalFrame {
 
     private void tbClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbClientesMouseClicked
         int fila = tbClientes.getSelectedRow();
-        txtNombres.setText(tbClientes.getValueAt(fila, 0).toString());
-        txtApellidos.setText(tbClientes.getValueAt(fila, 1).toString());
-        txtIdentidad.setText(tbClientes.getValueAt(fila, 2).toString());
+        txtNombres.setText(tbClientes.getValueAt(fila, 1).toString());
+        txtApellidos.setText(tbClientes.getValueAt(fila, 2).toString());
+        txtIdentidad.setText(tbClientes.getValueAt(fila, 3).toString());
         Date FechaTabla = (Date) tbClientes.getValueAt(fila, 4);
         java.util.Date FechaActualizar = new java.util.Date(FechaTabla.getTime());
         jdFechaNac.setDate(FechaActualizar);
